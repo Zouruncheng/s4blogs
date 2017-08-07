@@ -1,0 +1,128 @@
+
+*{
+    margin:0;
+    padding:0;
+}
+.content{
+    background-color: #ededed;
+    padding-top: 48px;
+}
+.main-content{
+    width:1016px;
+    margin:0 auto;
+    height:auto!important;
+    overflow: hidden;
+    min-height: 713px;
+    background-color: #ffffff;
+}
+.content-L{
+    width:630px;
+    overflow: hidden;
+    float: left;
+    background-color: orange;
+    min-height: 700px;
+}
+.item{
+    padding-top: 10px;
+    border-bottom:1px solid #dce7f4;
+    overflow: hidden;
+    position: relative;
+}
+.title{
+    margin-left: 60px;
+    text-align: center;
+}
+.avatar{
+    float: left;
+    margin-right: 10px;
+    padding-bottom: 5px;
+}
+.info{
+}
+
+
+.item .avatar img{
+    width: 60px;
+    height: 60px;
+
+}
+
+
+.content-R{
+    width:300px;
+    float: right;
+}
+.top-band{
+    overflow: hidden;
+    line-height:18px;
+    margin-top: 4px;
+}
+
+
+/*头部*/
+.head{
+    top:0;
+    left:0;
+    width:100%;
+    position: fixed;
+    z-index: 1;
+}
+.left{
+    float: left;
+}
+.right{
+    float: right;
+}
+.hide{
+    display: none;
+}
+.pg-header{
+    height: 48px;
+    width: 1016px;
+    background-color: #204d74;
+    line-height: 48px;
+    margin:0 auto;
+}
+.pg-header .logo{
+    color: white;
+    font-size: 18px;
+    width: 200px;
+    text-align: center;
+    border-right: 1px solid #8a6d3b;
+}
+.pg-header .rmenus a{
+    display: inline-block;
+    padding: 0 15px;
+    color: white;
+}
+.pg-header .rmenus a:hover{
+    background-color: #269abc;
+}
+.pg-header .avatar{
+    padding: 0 20px;
+}
+.pg-header .avatar img{
+    border-radius: 50%;
+}
+.pg-header .avatar .user-info{
+    display: none;
+    background-color: white;
+    border: 1px solid #dddddd;
+    position: absolute;width: 200px;top: 48px;right: 2px;color: white;z-index: 100;
+}
+.pg-header .avatar:hover .user-info{
+    display: block;
+}
+.pg-header .avatar .user-info a{
+    display: block;
+}
+.menus{
+    width: 200px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    top: 48px;
+    border-right: 1px solid #dddddd;
+    background-color: #dddddd;
+
+}

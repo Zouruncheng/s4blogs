@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册页面</title>
+    <link rel="stylesheet" href="/static/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <style>
+        .register {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            margin-left: -300px;
+            margin-top: -100px;
+            width: 600px;
+            height: 400px;
+        }
+        .img-box{
+            position: absolute;
+            height: 140px;
+            width:140px;
+            top:100px;
+            left:50%;
+            margin-left: -70px;
+        }
+
+        #img1 {
+            width: 140px;
+            height:140px;
+        }
+        #touxiang{
+            width: 140px;
+            height:140px;
+            opacity: 0;
+
+        }
+    </style>
+</head>
+<body>
+<div class="register">
+    <form class="form-horizontal" method="post" action="/register/">
+        {% csrf_token %}
+        <div class="form-group">
+            <label class="col-sm-2 control-label">用户名</label>
+            <div class="col-sm-10">
+                {{ obj.username }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">密码</label>
+            <div class="col-sm-10">
+                {{ obj.password }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">确认密码</label>
+            <div class="col-sm-10">
+                {{ obj.password1 }} <span style="color: red;">{{ obj.errors.password1.0 }}</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">昵称</label>
+            <div class="col-sm-10">
+                {{ obj.nickname }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">邮箱</label>
+            <div class="col-sm-10">
+                {{ obj.email }}
+            </div>
+        </div>
+        <div>
+            {{ obj.avatar }}
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default">注册</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="img-box" style="z-index: 999">
+    <form id="f1" method="post" action="/upload/" target="ifr" enctype="multipart/form-data">
+        {% csrf_token %}
+        <iframe id="ifr" name="ifr" style="display: none"></iframe>
+        <input type="file" name="fafafa" id="touxiang" onchange="upload()">
+    </form>
+</div>
+<div class="img-box">
+    <img id="img1" src="..." alt="点击上传头像" class="img-circle">
+</div>
+
+<div></div>
+
+</body>
+<script src="/static/plugin/jquery-3.2.1.js"></script>
+<script>
+    function up_img() {
+        // 创建表单对象
+        var form = new FormData();
+        file_obj = $("#fafafa")[0].files[0];
+        form.append("fafafa", file_obj);
+
+        // ajax上传头像
+        $.ajax({
+            url: /upload/,
+            type: "post",
+            data: form,
+            contenType: false,
+            processData: false,
+            success: function (data) {
+                console.log(data);
+            }
+
+        })
+    }
+
+    function upload(){
+        document.getElementById("ifr").onload=loadImg;
+        document.getElementById("f1").submit();
+    }
+    function loadImg() {
+        var content = document.getElementById("ifr").contentWindow.document.body.innerText;
+        $("#img1").prop("src","/"+content);
+        $("#avatar-path").val("/"+content);
+
+    }
+
+</script>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>博客首页</title>
+    <link rel="stylesheet" href="/static/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/plugin/font-awesome-4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="/static/css/index.css">
+</head>
+<body>
+<nav class="navbar navbar-default no-radius">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Amanda的日记本</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                {% if type_id %}
+                    <li><a href="/">亚洲无码</span></a></li>
+                {% else %}
+                    <li class="active"><a href="/">亚洲无码</a></li>
+                {% endif %}
+
+                {% for type in type_choice_list %}
+                    {% if type.0 == type_id %}
+                        <li class="active"><a href="/index1/{{ type.0 }}/">{{ type.1 }}</a></li>
+                    {% else %}
+                        <li><a href="/index1/{{ type.0 }}/">{{ type.1 }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                {% if login_info.status %}
+                    <li><a href="/login/">通知</a></li>
+                    <li><a href="/login/">管理</a></li>
+                    <li style="margin-top: -6px;">
+                        <a href="/register/">
+                            <img src="{{ login_info.avatar }}" style="width: 30px;height: 30px;">
+                            {{ login_info.user }}
+                        </a>
+                    </li>
+                {% else %}
+
+                    <li><a href="/login/">登录</a></li>
+                    <li><a href="/register/">注册</a></li>
+                {% endif %}
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+<div>
+    <div class="container">
+        <div class="col-md-8">
+            <div class="item">
+                <div class="title"><a href="">监利中学一百一十周年校庆</a></div>
+                <div class="article clearfix">
+                    <a href="" class="avatar">
+                        <img src="/static/avatar/1.jpg"></a>
+
+                    摘要: 原生ajax Ajax主要就是使对象来完成请求的操作，该对象在主流浏览器中均存在(除早起的IE)，Ajax首次出现IE5.5中存在（ActiveX控件）。
+                    XmlHttpRequest对象介绍
+                    <a href="">阅读全文</a>
+                </div>
+                <div class="info">
+                    <a href="">邹润成</a>
+                    <span>发布于</span>
+                    <i>2017-06-13 17:22:32</i>
+                    <a href="">踩</a>
+                    <a href="">赞</a>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">阅读排行榜</h3>
+                </div>
+                <div class="panel-body">
+                    我的后宫佳丽三千
+                </div>
+                <div class="panel-body">
+                    我的后宫佳丽三千好看
+                </div>
+                <div class="panel-body">
+                    我的后宫佳丽三千爱的
+                </div>
+                <div class="panel-body">
+                    我的后宫佳丽三千阿萨德
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">评论排行榜</h3>
+                </div>
+                <div class="panel-body">
+                    最浪不过表妹
+                </div>
+                <div class="panel-body">
+                    最鲜不过海味
+                </div>
+                <div class="panel-body">
+                    好吃不过饺子
+                </div>
+                <div class="panel-body">
+                    好玩不过嫂子
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

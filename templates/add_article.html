@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加文章</title>
+    <link rel="stylesheet" href="/static/plugin/bootstrap-3.3.7/css/bootstrap.css">
+</head>
+<body>
+<form class="form-horizontal" action="/myadmin/add_article/" method="post" novalidate>
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="inputEmail3" class="col-sm-2 control-label">文章标题</label>
+        <div class="col-sm-6">
+            {{ obj.title }}
+        </div>
+    </div>
+
+    <div>文章类型：{{ obj.article_type_id }}</div>
+    <div>文章分类：{{ obj.category_id }}</div>
+    <div>文章标签：{{ obj.tag_id }}</div>
+
+    {{ obj.content }}
+    <input type="submit" value="提交"/>
+
+
+</form>
+<script src="/static/kindeditor_a5/kindeditor-4.1.10/kindeditor-all.js"></script>
+<script>
+    KindEditor.create("#i1", {
+        width: "700px",
+        height: "300px",
+        resizeType: 1,
+        uploadJson: "/myadmin/upload_img.html",
+        extraFileUploadParams: {
+            "csrfmiddlewaretoken": "{{ csrf_token }}"
+        }
+    })
+</script>
+</body>
+</html>

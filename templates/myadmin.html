@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>博客园管理</title>
+    <link rel="stylesheet" href="/static/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/plugin/font-awesome-4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="/static/css/commons.css">
+    {% block css %} {% endblock %}
+</head>
+<body>
+
+<div class="pg-header">
+    <div class="logo left">老男孩后台管理</div>
+    <div class="avatar right" style="position: relative">
+        <img style="width: 40px;height: 40px;" src="{{ user_obj.avatar }}">
+        <div class="user-info">
+            <a>个人资料</a>
+            <a href="/logout/">注销</a>
+        </div>
+    </div>
+    <div class="rmenus right">
+        <a><i class="fa fa-commenting-o" aria-hidden="true"></i> 消息</a>
+        <a><i class="fa fa-envelope-o" aria-hidden="true"></i> 邮件</a>
+    </div>
+</div>
+<div class="pg-body">
+    <div class="menus">
+        <a href="/classes/"> <i class="fa fa-futbol-o" aria-hidden="true"></i> 文章管理</a>
+        <a href="/student/">标签管理</a>
+    </div>
+    <div class="content">
+        <ol class="breadcrumb">
+            <li><a href="#">首页</a></li>
+            <li><a href="#">文章管理</a></li>
+            <li class="active"><a href="/myadmin/add_article/">添加文章</a></li>
+        </ol>
+
+
+        <div class="condition">
+            博客分类:
+            {% if kwargs.article_type_id == 0 %}
+                <a class="active" href="/myadmin/filter-0-{{ kwargs.category_id }}-{{ kwargs.tags__nid }}">
+                    全部
+                </a>
+            {% else %}
+                <a href="/myadmin/filter-0-{{ kwargs.category_id }}-{{ kwargs.tags__nid }}">
+                    全部
+                </a>
+            {% endif %}
+
+
+            {% for item in article_type_list %}
+                {% if item.0 == kwargs.article_type_id %}
+                    <a class="active"
+                       href="/myadmin/filter-{{ item.0 }}-{{ kwargs.category_id }}-{{ kwargs.tags__nid }}">
+                        {{ item.1 }}
+                    </a>
+                {% else %}
+                    <a href="/myadmin/filter-{{ item.0 }}-{{ kwargs.category_id }}-{{ kwargs.tags__nid }}">
+                        {{ item.1 }}
+                    </a>
+                {% endif %}
+            {% endfor %}
+
+        </div>
+
+
+        <div class="condition">
+            个人分类：
+            {% if kwargs.category_id == 0 %}
+                <a class="active" href="/myadmin/filter-{{ kwargs.article_type_id }}-0-{{ kwargs.tags__nid }}">
+                    全部
+                </a>
+            {% else %}
+                <a href="/myadmin/filter-{{ kwargs.article_type_id }}-0-{{ kwargs.tags__nid }}">
+                    全部
+                </a>
+            {% endif %}
+
+
+            {% for item in category_list %}
+                {% if item.nid == kwargs.category_id %}
+                    <a class="active"
+                       href="/myadmin/filter-{{ kwargs.article_type_id }}-{{ item.nid }}-{{ kwargs.tags__nid }}">
+                        {{ item.title }}
+                    </a>
+                {% else %}
+                    <a href="/myadmin/filter-{{ kwargs.article_type_id }}-{{ item.nid }}-{{ kwargs.tags__nid }}">
+                        {{ item.title }}
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+
+        <div class="condition">
+            标签分类：
+            {% if kwargs.tags__nid == 0 %}
+                <a class="active" href="/myadmin/filter-{{ kwargs.article_type_id }}-{{ kwargs.category_id }}-0">
+                    全部
+                </a>
+            {% else %}
+                <a href="/myadmin/filter-{{ kwargs.article_type_id }}-{{ kwargs.category_id }}-0">
+                    全部
+                </a>
+            {% endif %}
+
+            {% for item in tag_list %}
+                {% if item.nid == kwargs.tags__nid %}
+
+                    <a class="active"
+                       href="/myadmin/filter-{{ kwargs.article_type_id }}-{{ kwargs.category_id }}-{{ item.nid }}">
+                        {{ item.title }}
+                    </a>
+                {% else %}
+                    <a href="/myadmin/filter-{{ kwargs.article_type_id }}-{{ kwargs.category_id }}-{{ item.nid }}">
+                        {{ item.title }}
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <hr>
+
+        <table class="table table-striped">
+            <thead>
+            <th>文章id</th>
+            <th>文章标题</th>
+            <th colspan="2">操作</th>
+            </thead>
+            <tbody>
+            {% for item in article_list %}
+                <tr>
+                    <td>{{ item.nid }}</td>
+                    <td><a href="/home/{{ blog_obj.site }}/article/{{ item.nid }}.html">{{ item.title }}</a></td>
+                    <td><a>编辑</a></td>
+                    <td><a class="del-article">删除</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+
+
+    </div>
+
+
+</div>
+{#模态对话框删除#}
+<div id="shadow" class="shadow hide"></div>
+<div class="del-model hide">
+    <p>是否删除文章</p>
+    <input type="button" value="删除" id="confirm-del">
+    <input type="button" value="取消" id="cancel-del">
+</div>
+{% block js %}{% endblock %}
+<script src="/static/plugin/jquery-3.2.1.js"></script>
+<script>
+    $(function () {
+        del_article();
+        confirm_del();
+        cancel();
+    });
+
+    // 点击删除按钮，弹出模态对话框
+    function del_article() {
+
+        $(".del-article").click(function () {
+
+            $("#shadow").removeClass("hide");
+            $(".del-model").removeClass("hide");
+            var title = $($(this).parent().prevAll()[1]).find("a").text();
+            var article_id = $($(this).parent().prevAll()[2]).text();
+            console.log(title);
+            console.log(article_id);
+            var ele = $("<p></p>");
+            ele.text(title);
+            ele.attr("article_id", article_id);
+            $("#confirm-del").before(ele);
+
+        })
+    }
+
+
+    // 点击确认删除，ajax发送删除数据
+    function confirm_del() {
+        $("#confirm-del").click(function () {
+            var article_id = $("#confirm-del").prev().attr("article_id");
+            console.log(article_id);
+            $.ajax({
+                url: "/myadmin/del_article/",
+                type: "post",
+                data: {"article_id": article_id, "csrfmiddlewaretoken": "{{ csrf_token }}"},
+                success: function (data) {
+                    console.log(data);
+                }
+
+            })
+        })
+    }
+
+    // 取消删除
+    function cancel() {
+        $("#cancel-del").click(function () {
+            $("#shadow").addClass("hide");
+            $(".del-model").addClass("hide");
+        })
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <link rel="stylesheet" href="/static/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <style>
+        .register1 {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            margin-left: -200px;
+            width: 600px;
+            height: 600px;
+            border:1px solid black;
+        }
+        .box{
+            position: relative;
+            width: 140px;
+            height: 140px;
+            left:250px;
+            top:-50px;
+        }
+        #img1{
+            position: absolute;
+            width: 140px;
+            height: 140px;
+        }
+        #img2{
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            opacity:0;
+            top:0;
+            left:0;
+        }
+    </style>
+</head>
+<body>
+<h2 style="text-align: center">注册页面</h2>
+<div class="register1">
+    <form class="form-horizontal" enctype="multipart/form-data" method="post" action="/register1/">
+        {% csrf_token %}
+        <div class="box">
+
+            <img id="img1" class="img-thumbnail" src="/static/avatar/default.png">
+            {{ obj.avatar }}
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">用户名</label>
+            <div class="col-sm-10">
+                {{ obj.username }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">昵称</label>
+            <div class="col-sm-10">
+                {{ obj.nickname }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">密码</label>
+            <div class="col-sm-10">
+                {{ obj.password }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">重复密码</label>
+            <div class="col-sm-10">
+                {{ obj.password1 }} <span style="color: red;">  {{ obj.errors.password1.0 }} </span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">邮箱</label>
+            <div class="col-sm-10">
+                {{ obj.email }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">验证码</label>
+            <div class="col-sm-4">
+                {{ obj.check_str }} <span style="color: red;">{{ obj.errors.check_str.0 }}</span>
+
+            </div>
+            <div class="col-sm-6">
+                {#                    <img src="/static/1.jpg" style="width: 120px; height: 30px;">#}
+                <img onclick="changeCode(this)" src="/check_code/" style="width: 120px; height: 30px;">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default">注册</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+<script src="/static/plugin/jquery-3.2.1.js"></script>
+<script src="/static/plugin/jquery.cookie.js"></script>
+<script>
+    function changeCode(self) {
+        self.src=self.src+"?"
+    }
+    $(function() {
+        bindAvatar3();
+    });
+    // 上传头像到服务器并预览
+    function bindAvatar1() {
+        $("#img2").change(function () {
+            // 获取随机字符串
+            var token = $.cookie("csrftoken");
+            // 获取文件对象
+            var obj = $(this)[0].files[0];
+            var form = new FormData();
+            form.append("fafafa",obj);
+            $.ajax({
+                url:"/upload/",
+                type:"post",
+                data:form,
+                headers:{"X-CSRFToken":token},
+                contentType:false,
+                processData:false,
+                success:function (data) {
+                    $("#img1").prop("src","/"+data)
+                }
+            })
+        })
+    }
+
+    // 本地上传图像到浏览器，并预览
+    function bindAvatar2() {
+         $("#img2").change(function () {
+             // 获取当前上传图片对象
+             var obj = $(this)[0].files[0];
+
+             var v = window.URL.createObjectURL(obj);
+             $("#img1").attr("src",v);
+
+             // 图片加载完成后释放内存
+             $("#img1").load(function() {
+                 window.URL.revokeObjectURL(v);
+             });
+         })
+    }
+
+    // 方式三：
+    function bindAvatar3() {
+        $("#img2").change(function () {
+          var obj = $(this)[0].files[0];
+          var reader = new FileReader();
+          reader.onload = function () {
+              $("#img1").attr("src", this.result)
+          }
+          reader.readAsDataURL(obj);
+
+        })
+    }
+</script>
+
+</body>
+</html>

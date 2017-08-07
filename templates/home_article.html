@@ -1,0 +1,162 @@
+{% extends "layout.html" %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/article_css.css">
+{% endblock %}
+
+{% block article %}
+    <div class="article">
+        <h1 class="title" style="text-align: center;">{{ article_obj.title }}</h1>
+        <div class="author" style="text-align: center;">
+            <span>作者</span>
+            <span><a href="">{{ user_obj.nickname }}</a></span>
+        </div>
+        <div class="show-content">
+            {{ article_detail.content|safe }}
+        </div>
+        <hr>
+    </div>
+    <div class="show-foot">
+
+        <div>
+            <img id="user_img" src="{{ user_obj.avatar }}" style="height: 80px;width: 80px;">
+        </div>
+        <div id="likeit" style="text-align: center;">
+            <button id="like" class="btn btn-default btn-lg active like"><i class="fa fa-thumbs-up"
+                                                                            aria-hidden="true"></i>({{ article_obj.up_count }})
+            </button>
+            <button id="dislike" class="btn btn-default btn-lg active dislike"><i class="fa fa-thumbs-down"
+                                                                                  aria-hidden="true">({{ article_obj.down_count }})</i>
+            </button>
+        </div>
+        <div>
+            <a href="">{{ user_obj.nickname }}</a>
+            发布于{{ article_obj.create_time }}
+            <span>阅读({{ article_obj.read_count }})</span>
+            <span>评论({{ article_obj.comment_count }})</span>
+        </div>
+
+    </div>
+    <hr>
+    <div class="write">
+        <input type="textarea" id="content" name="comment"><br>
+        <input type="button" value="评论" id="put"> {% csrf_token %}
+
+    </div>
+
+
+    <div id="box" class="comment-box">
+        {#        <ul class="comment-list">#}
+        {#            <li class="items" style="overflow: hidden">#}
+        {#                <span style="display: block" >#}
+        {#                    <div class="comment-L"><a href=""><img#}
+        {#                                                           src="/static/avatar/7.jpg"></a></div>#}
+        {#                    <div class="comment-R">#}
+        {#                        <div class="pp">#}
+        {#                            <a href="" class="name">至高之拳</a>#}
+        {#                            <span>我用双手成就你的梦想</span>#}
+        {#                            <span style="padding-left: 18px">2小时前</span>#}
+        {#                        </div>#}
+        {#                    </div>#}
+        {#                </span>#}
+        {#                <ul class="comment-list">#}
+        {#                    <li class="last">#}
+        {#                        <span style="display: block" style="margin-top: 10px;">#}
+        {#                            <div class="comment-L"><a href=""><img src="/static/avatar/4.jpg"></a></div>#}
+        {#                            <div class="comment-R">#}
+        {#                        <div class="pp">#}
+        {#                            <a href="" class="name">放逐之刃</a>#}
+        {#                            <span>断剑重铸之日，其实归来之时</span>#}
+        {#                            <span style="padding-left: 18px">2小时前</span>#}
+        {#                        </div>#}
+        {#                    </div>#}
+        {#                        </span>#}
+        {##}
+        {#                    </li>#}
+        {#                </ul>#}
+        {#            </li>#}
+        {#            <hr>#}
+        {#        </ul>#}
+        {#        <ul class="comment-list">#}
+        {#            {% for item in comment_list %}#}
+        {#                <li class="items">#}
+        {#                <span style="display: block">#}
+        {#                    <div class="comment-L"><a href=""><img class="img-thumbnail"#}
+        {#                                                           src="{{ item.user__avatar }}"></a></div>#}
+        {#                    <div class="comment-R">#}
+        {#                        <div class="pp">#}
+        {#                            <a href="" class="name">{{ item.user__nickname }}</a>#}
+        {#                            <span>{{ item.content }}</span>#}
+        {#                            <span style="padding-left: 18px">{{ item.create_time }}</span>#}
+        {#                        </div>#}
+        {#                    </div>#}
+        {#                </span>#}
+        {#                </li>#}
+        {#                <hr>#}
+        {#            {% endfor %}#}
+        {#        </ul>#}
+
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+    <script src="/static/plugin/jquery.cookie.js"></script>
+    <script src="/static/js/article_js.js"></script>
+    <script>
+        $(function () {
+            $.ajax({
+                url: "/comment/",
+                type: "post",
+                data: {"csrfmiddlewaretoken": "{{ csrf_token }}", "nid": "{{ article_obj.nid }}"},
+                dataType: "JSON",
+                success: function (args) {
+                    console.log(args);
+                    var comment = comment_tree(args);
+                    $("#box").append(comment)
+                }
+            })
+        });
+
+        function comment_tree(args) {
+            var ele = $("<ul></ul>");
+            ele.attr("class", "comment-list");
+            $.each(args, function (i, item) {
+
+                var ele2 = $("<li></li>"); // li标签
+                var ele4 = $("<img>");  // 头像
+                var ele5 = $("<a>" + item.user__nickname + "</a>");  //  用户名
+                var ele6 = $("<span></span>");
+                var ele_hr = $("<hr>");
+                ele6.text(item.content);
+                // 创建头像标签
+                ele4.prop("src", item.user__avatar);
+                // 创建用户名标签
+                {#                ele5.text(item.user__nickname);#}
+
+                ele2.append(ele4);//添加头像
+                ele2.append(ele5); // 添加昵称
+                // 添加评论
+                ele2.append(ele6);
+                ele2.append(ele_hr);
+                // 把评论的ul标签添加到ul
+                ele.append(ele2);
+                if (item.child.length>0) {
+                    var ele3 = comment_tree(item.child);
+                    ele.append(ele3);
+                }
+                // 把生成的ul标签添加
+            });
+
+            return ele;
+        }
+
+        //  自定义stringFormat函数
+        String.prototype.Format = function(arg){
+            temp = this.replace(/\{(\w+)\}/g,function (a1, a2) {
+                return arg[a2];
+            });
+            return temp;
+        }
+    </script>
+{% endblock %}

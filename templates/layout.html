@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>母版layout</title>
+    <link rel="stylesheet" href="/static/plugin/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/plugin/font-awesome-4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    {% block css %}
+    {% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">{{ user_obj.nickname }}的博客园</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            {% if login_info.status %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/">博客园</a></li>
+                    <li><a href="/home/{{ blog_obj.site }}">我的博客</a></li>
+                    <li><a href="/myadmin/filter-0-0-0">管理</a></li>
+                    <li><a href="/logout/">注销</a></li>
+                </ul>
+            {% else %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/">博客园</a></li>
+                    <li><a href="/login/">登录</a></li>
+                    <li><a href="/register/">注册</a></li>
+                </ul>
+            {% endif %}
+
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<div class="col-md-3 blog-left">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">布告栏</h3>
+        </div>
+        <div class="panel-body">
+            <div>昵称：{{ user_obj.nickname }}</div>
+            <div>园龄：5年</div>
+            <div>粉丝：12321</div>
+            <div>关注：121</div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">我的分类</div>
+        <div class="panel-body">
+
+            <ul>
+                {% for category in category_list %}
+                    <li>
+                        <a href="/home/{{ blog_obj.site }}/category/{{ category.category__nid }}.html">{{ category.category__title }}({{ category.ccount }})</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">我的标签</div>
+
+        <!-- List group -->
+
+        <ul>
+            {% for tag in tag_list %}
+                <li>
+                    <a href="/home/{{ blog_obj.site }}/tag/{{ tag.tag__nid }}.html">{{ tag.tag__title }}({{ tag.tcount }})</a>
+                </li>
+            {% endfor %}
+
+        </ul>
+    </div>
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">时间</div>
+        <ul>
+            {% for item in date_list %}
+                <li><a href="/home/{{ blog_obj.site }}/date/{{ item.ctime }}.html">{{ item.ctime }} ({{ item.c }})</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+
+<div class="col-md-8 blog-right">
+
+
+    {% block article %}
+    {% endblock %}
+</div>
+</body>
+<script src="/static/plugin/jquery-3.2.1.js"></script>
+{% block javascript %}
+{% endblock %}
+</html>
